@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <title>canvas学习</title>
+  <style>
+    body{
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 雪花 -->
+  <canvas id="snowflake" style="background: black"></canvas>
+</body>
+<script type="text/javascript">
+
+    let canvas = document.getElementById("snowflake");
+    let ctx = canvas.getContext("2d");
+
+    let h = window.innerHeight;
+    let w = window.innerWidth;
+    canvas.width = w;
+    canvas.height = h;
+    window.onsize = function () {
+       h = window.innerHeight;
+       w = window.innerWidth;
+       canvas.width = w;
+       canvas.height = h;
+    };
+
+    let snow = function(x, y, r, c)
+    {
+      this.x = x;
+      this.y = y;
+      this.r = r;
+      this.c = c;
+      this.draw = function ()
+      {
+        ctx.beginPath();
+        ctx.fillStyle = this.c;
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2, false);
+        ctx.stroke();
+        ctx.fill();
+      };
+     this.update = function(speed)
+      {
+        this.y = this.y + Math.random() * speed;//让雪往下下
+        if(this.y > h)
+        {
+          this.y = 0;
+        }
+
+        this.x = this.x - Math.random() * 0.5;//让雪往左下
+        if(this.x < 0)
+        {
+          this.x = w;
+        }
+
+        this.draw();
+      }
+    };
+
+    let point = [];
+    for(let i = 0; i < 1000; i ++)
+    {
+      let p = new snow(Math.random() * w, Math.random() * h, Math.random() * 5, "white");
+      point[i] = p;
+      p.draw();
+    }
+
+    setInterval(updateAll, 1000/60);
+
+    function updateAll()
+    {
+      ctx.clearRect(0, 0, w, h);
+      for(let i = 0; i < point.length; i++)
+      {
+        point[i].update(1);
+      }
+    }
+
+</script>
+</html>
