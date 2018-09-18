@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>canvas黑客特效</title>
+  <style>
+   html, body{
+     margin: 0;
+     padding: 0;
+   }
+  </style>
+</head>
+<body>
+  <canvas id="canvas" style="background: black"></canvas>
+<script>
+  let canvas = document.getElementById("canvas");
+  let ctx = canvas.getContext("2d");
+  let h = window.innerHeight;
+  let w = window.innerWidth;
+  canvas.width = w;
+  canvas.height = h;
+  window.onsize = function () {
+    h = window.innerHeight;
+    w = window.innerWidth;
+    canvas.width = w;
+    canvas.height = h;
+  };
+  let all = "QWERTYUIOPASDFGHJKLZXCVBNM";
+
+  function randWd()
+  {
+    return all.charAt(parseInt(Math.random() * all.length));
+  }
+
+  let word = function (x, y, t) {
+    this.x = x;
+    this.y = y;
+    this.t = t;
+    this.draw = function () {
+      ctx.beginPath();
+      ctx.fillStyle = "green";
+      ctx.font="20px Verdana";
+      ctx.fillText(this.t, this.x, this.y);
+    };
+    this.update = function ()
+    {
+      this.t = randWd();
+      this.y += 1;
+      if(this.y > h)
+      {
+        this.y = 0;
+      }
+      this.draw();
+    };
+  };
+
+    function words(h, w, fw)
+    {
+      let map = [];
+      let index = 0;
+      let wd = null;
+      for(let i=0; i < w; i += fw)
+      {
+        for(let j = 0; j < h; j += fw)
+        {
+          wd = new word(i, j, randWd());
+          wd.draw();
+          map[index] = wd;
+          index ++;
+        }
+      }
+      return map;
+    };
+
+  let wdList = words(h, w, 20);
+  // setInterval(refresh, 1000/60);
+  window.requestAnimationFrame(function () {
+    setInterval(refresh, 1000/24);
+  });
+  function refresh() {
+    ctx.clearRect(0, 0, w, h);
+    for(let z = 0; z < wdList.length; z ++)
+    {
+        wdList[z].update();
+    }
+  }
+</script>
+</body>
+</html>
